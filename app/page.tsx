@@ -14,7 +14,7 @@ export default function Home() {
       <div className="w-full">
         <NavbarDemo />
       </div>
-      <div>
+      <div className="-mt-10">
         <HeroSectionDemo />
       </div>
       <div className="w-full md:mt-96 ">

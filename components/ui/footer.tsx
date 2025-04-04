@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-
+import Image from "next/image";
 interface FooterProps {
-  logo: React.ReactNode;
   brandName: string;
   socialLinks: Array<{
     icon: React.ReactNode;
@@ -23,7 +22,6 @@ interface FooterProps {
 }
 
 export function Footer({
-  logo,
   brandName,
   socialLinks,
   mainLinks,
@@ -39,7 +37,12 @@ export function Footer({
             className="flex items-center gap-x-2"
             aria-label={brandName}
           >
-            {logo}
+            <Image
+              src="https://assets.aceternity.com/logo-dark.png"
+              alt="logo"
+              width={30}
+              height={30}
+            />
             <span className="font-bold text-xl">{brandName}</span>
           </a>
           <ul className="flex list-none mt-6 md:mt-0 space-x-3">
