@@ -1,3 +1,4 @@
+import { FooterD } from "@/components/blocks/footer";
 import { GlowingEffectDemo } from "@/components/blocks/glow-card";
 import { MarqueeDemo } from "@/components/blocks/marquee";
 import SitePerformanceTester from "@/components/blocks/perfomance";
@@ -23,6 +24,9 @@ export default function Home() {
 
       <div className="w-full -mt-10">
         <GlowingEffectDemo />
+      </div>
+      <div className="w-full -mt-10">
+        <FooterD />
       </div>
     </div>
   );
