@@ -1,4 +1,5 @@
-import { Marquee } from "@/components/ui/marquee";
+import Marquee from "react-fast-marquee";
+import WordPullUp from "../ui/word-pull-up";
 
 const Logos = {
   tailwindcss: () => (
@@ -89,15 +90,21 @@ export function MarqueeDemo() {
   const arr = [Logos.tailwindcss, Logos.framer, Logos.nextjs, Logos.aws];
 
   return (
-    <Marquee>
-      {arr.map((Logo, index) => (
-        <div
-          key={index}
-          className=" mt-10 relative h-full w-fit mx-[4rem] flex items-center justify-start"
-        >
-          <Logo />
-        </div>
-      ))}
-    </Marquee>
+    <div>
+      <WordPullUp
+        className=" font-bold tracking-[-0.02em] sm:leading-[5rem] md:leading-[5rem] dark:text-white"
+        words="Trusted by the world's top brands"
+      />
+      <Marquee autoFill={true}>
+        {arr.map((Logo, index) => (
+          <div
+            key={index}
+            className="relative h-full w-full mx-[4rem] flex items-center justify-start mt-20"
+          >
+            <Logo />
+          </div>
+        ))}
+      </Marquee>
+    </div>
   );
 }

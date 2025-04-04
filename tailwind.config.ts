@@ -75,11 +75,6 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        marquee: {
-          to: {
-            transform: "translateX(-50%)",
-          },
-        },
         "accordion-down": {
           from: {
             height: "0",
@@ -267,7 +262,6 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         appear: "appear 0.5s ease-out forwards",
         "appear-zoom": "appear-zoom 0.5s ease-out forwards",
-        marquee: "marquee var(--duration, 30s) linear infinite",
         "aurora-border": "aurora-border 10s ease-in-out infinite",
         "aurora-1": "aurora-1 15s ease-in-out infinite",
         "aurora-2": "aurora-2 15s ease-in-out infinite",

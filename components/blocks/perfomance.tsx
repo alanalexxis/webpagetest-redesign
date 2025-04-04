@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ChevronDown,
   Search,
@@ -22,7 +22,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  useSpring,
+} from "framer-motion";
 
 import { ContainerTextFlip } from "../ui/text-flip";
 import { BorderBeam } from "../magicui/border-beam";
@@ -109,12 +115,82 @@ export default function SitePerformanceTester() {
   );
   const [deviceFilter, setDeviceFilter] = useState("ALL");
 
+  // Refs for scroll-based animations
+  const componentRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  // Check if user prefers reduced motion
+  const prefersReducedMotion = useReducedMotion();
+
+  // Use scroll progress for animations instead of IntersectionObserver
+  const { scrollYProgress } = useScroll({
+    target: componentRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Create smoother scroll progress using spring physics
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
+  // Transform scroll progress to animation progress values
+  const headerOpacity = useTransform(smoothScrollProgress, [0.1, 0.2], [0, 1]);
+  const formOpacity = useTransform(smoothScrollProgress, [0.15, 0.25], [0, 1]);
+  const configOpacity = useTransform(smoothScrollProgress, [0.2, 0.3], [0, 1]);
+  const filterOpacity = useTransform(
+    smoothScrollProgress,
+    [0.25, 0.35],
+    [0, 1]
+  );
+  const gridOpacity = useTransform(smoothScrollProgress, [0.3, 0.4], [0, 1]);
+  const advancedOpacity = useTransform(
+    smoothScrollProgress,
+    [0.35, 0.45],
+    [0, 1]
+  );
+  const featuresOpacity = useTransform(
+    smoothScrollProgress,
+    [0.4, 0.5],
+    [0, 1]
+  );
+  const footerOpacity = useTransform(
+    smoothScrollProgress,
+    [0.45, 0.55],
+    [0, 1]
+  );
+
+  // Derived states for visibility
+  const [isVisible, setIsVisible] = useState(false);
+
   useEffect(() => {
-    const handleMouseMove = (e) =>
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+    // Handle visibility based on scroll progress
+    const unsubscribe = scrollYProgress.onChange((value) => {
+      if (value > 0.1) {
+        setIsVisible(true);
+      }
+    });
+
+    // Handle mouse movements with RAF for better performance
+    const handleMouseMove = (e) => {
+      if (!throttleMouseMove.current) {
+        throttleMouseMove.current = true;
+        requestAnimationFrame(() => {
+          setMousePosition({ x: e.clientX, y: e.clientY });
+          throttleMouseMove.current = false;
+        });
+      }
+    };
+
+    const throttleMouseMove = { current: false };
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      unsubscribe();
+    };
+  }, [scrollYProgress]);
 
   const handleSubmit = (e) => e.preventDefault();
 
@@ -137,67 +213,159 @@ export default function SitePerformanceTester() {
       ? testConfigurations
       : testConfigurations.filter((config) => config.device === deviceFilter);
 
+  // Animation variants with better performance settings
+  const fadeIn = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    },
+  };
+
+  // Primero, actualiza las variantes de animación para tener un efecto más distintivo por elemento
+  const staggerChildren = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1, // Incrementa el valor para mayor separación temporal
+        delayChildren: 0.1,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const scaleIn = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return (
-    <div className="bg-background flex flex-col items-center justify-center text-white relative overflow-hidden py-6 mt-64">
-      {/* Cursor glow */}
+    <div
+      ref={componentRef}
+      className="bg-background flex flex-col items-center justify-center text-white relative overflow-hidden py-6 mt-64 z-50"
+      style={{
+        willChange: "opacity, transform",
+        perspective: "1000px",
+        backfaceVisibility: "hidden",
+      }}
+    >
+      {/* Optimized cursor glow with lower intensity for better performance */}
       <div
-        className="pointer-events-none fixed inset-0 z-30 transition-opacity duration-300"
+        className="pointer-events-none fixed inset-0 z-30 opacity-70"
         style={{
-          background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(101, 70, 235, 0.06), transparent 40%)`,
+          background: `radial-gradient(500px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(101, 70, 235, 0.04), transparent 40%)`,
+          willChange: "background",
+          transform: "translateZ(0)",
         }}
       />
 
-      {/* Background elements */}
+      {/* Background elements - optimized with hardware acceleration */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute bottom-0 -right-40 w-96 h-96 rounded-full bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 blur-3xl"></div>
+        <div
+          className="absolute top-20 left-96 w-96 h-96 rounded-full bg-gradient-to-r from-blue-600/15 to-blue-600/15 blur-3xl"
+          style={{ transform: "translateZ(0)" }}
+        ></div>
       </div>
-      <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px] opacity-20"></div>
+      <div
+        className="absolute inset-0 bg-grid-white/[0.02] bg-[size:50px_50px] opacity-20"
+        style={{ transform: "translateZ(0)" }}
+      ></div>
 
       <div className="w-full max-w-6xl px-4 z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mx-auto"
-        >
-          {/* Header */}
-          <div className="flex flex-col items-center justify-center mb-6">
-            <div className="px-4 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs text-blue-200 inline-flex items-center mb-3">
+        <div className="mx-auto">
+          {/* Header - using motion values directly for smoother animations */}
+          <motion.div
+            style={{ opacity: headerOpacity }}
+            className="flex flex-col items-center justify-center mb-6"
+          >
+            <motion.div
+              variants={scaleIn}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+              style={{ willChange: "transform, opacity" }}
+              className="px-4 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs text-blue-200 inline-flex items-center mb-3"
+            >
               <span className="inline-block w-2 h-2 rounded-full bg-blue-400 mr-2 animate-pulse"></span>
               Instant website analysis
-            </div>
+            </motion.div>
 
             <div className="flex flex-col md:flex-row items-center justify-center gap-2">
-              <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
+              <motion.h1
+                variants={fadeIn}
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+                className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200"
+                style={{ willChange: "transform, opacity" }}
+              >
                 Start a
-              </h1>
+              </motion.h1>
 
-              <h1 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-white">
+              <motion.h1
+                variants={fadeIn}
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+                className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-200 to-white"
+                style={{ willChange: "transform, opacity" }}
+              >
                 Test!
-              </h1>
-              <ContainerTextFlip
-                words={[
-                  "now",
-                  "today",
-                  "quickly",
-                  "instantly",
-                  "successfully",
-                  "effortlessly",
-                  "like a pro",
-                  "with confidence",
-                  "with ease",
-                  "in seconds",
-                ]}
-              />
+              </motion.h1>
+              {isVisible && (
+                <ContainerTextFlip
+                  words={[
+                    "now",
+                    "today",
+                    "quickly",
+                    "instantly",
+                    "successfully",
+                    "effortlessly",
+                    "like a pro",
+                    "with confidence",
+                    "with ease",
+                    "in seconds",
+                  ]}
+                />
+              )}
             </div>
 
-            <p className="mt-2 text-center text-white/60 text-sm max-w-xl">
+            <motion.p
+              variants={fadeIn}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+              className="mt-2 text-center text-white/60 text-sm max-w-xl"
+              style={{ willChange: "transform, opacity" }}
+            >
               {getTestDescription()}
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          {/* Search form */}
-          <form onSubmit={handleSubmit} className="w-full max-w-2xl mx-auto">
+          {/* Search form - using motion values for smoother scroll-based animation */}
+          <motion.form
+            style={{ opacity: formOpacity }}
+            onSubmit={handleSubmit}
+            className="w-full max-w-2xl mx-auto"
+          >
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-r from-pink-600 to-purple-600 rounded-full opacity-75 group-hover:opacity-100 blur transition duration-300"></div>
               <div className="relative">
@@ -219,10 +387,13 @@ export default function SitePerformanceTester() {
                 </div>
               </div>
             </div>
-          </form>
+          </motion.form>
 
-          {/* Test Configuration */}
-          <div className="mt-4 w-full max-w-4xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4">
+          {/* Test Configuration - using motion values for smooth animations */}
+          <motion.div
+            style={{ opacity: configOpacity }}
+            className="mt-4 w-full max-w-4xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4"
+          >
             <div className="mb-4">
               <h3 className="text-sm font-semibold mb-1">Test Configuration</h3>
               <p className="text-xs text-white/60">
@@ -233,7 +404,10 @@ export default function SitePerformanceTester() {
             </div>
 
             {/* Device Selection */}
-            <div className="mb-4 flex items-center gap-3">
+            <motion.div
+              style={{ opacity: filterOpacity }}
+              className="mb-4 flex items-center gap-3"
+            >
               <span className="text-xs font-medium">Filter by:</span>
               <div className="flex gap-2">
                 <Button
@@ -275,7 +449,7 @@ export default function SitePerformanceTester() {
                   <span>Desktop</span>
                 </Button>
               </div>
-            </div>
+            </motion.div>
 
             <div className="mb-3">
               <div className="flex items-center gap-2 mb-2">
@@ -299,16 +473,28 @@ export default function SitePerformanceTester() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+              {/* Card container with improved motion values for smoother animations */}
+              <motion.div
+                style={{ opacity: gridOpacity }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2"
+                variants={staggerChildren}
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+              >
                 {filteredConfigurations.map((config) => (
-                  <div
+                  <motion.div
                     key={config.id}
+                    variants={fadeIn}
                     className={`flex flex-col gap-2 p-3 border border-white/10 rounded-lg ${
                       selectedConfigId === config.id
                         ? "bg-white/10 border-purple-500/50"
                         : "bg-white/5"
                     } cursor-pointer transition-all duration-200`}
                     onClick={() => selectConfig(config.id)}
+                    style={{
+                      willChange: "transform, opacity",
+                      transform: "translateZ(0)",
+                    }}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
@@ -353,13 +539,19 @@ export default function SitePerformanceTester() {
                       <Info className="h-3 w-3 inline mr-1" />
                       {config.description}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
-            {/* Additional Test Options */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+            {/* Additional Test Options with smoother animations */}
+            <motion.div
+              style={{ opacity: advancedOpacity }}
+              className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs"
+              variants={fadeIn}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+            >
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -393,10 +585,16 @@ export default function SitePerformanceTester() {
                   Run Lighthouse Audit
                 </label>
               </div>
-            </div>
+            </motion.div>
 
             {/* Advanced Configuration */}
-            <div className="mt-3">
+            <motion.div
+              style={{ opacity: advancedOpacity }}
+              className="mt-3"
+              variants={fadeIn}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+            >
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-purple-600/20 flex items-center justify-center">
                   <div className="w-4 h-4 rounded-full bg-purple-600 flex items-center justify-center">
@@ -410,21 +608,34 @@ export default function SitePerformanceTester() {
                   Choose from all browser, location, & device options
                 </span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Start Test Button */}
-            <div className="mt-3 flex justify-end">
+            <motion.div
+              style={{ opacity: advancedOpacity }}
+              className="mt-3 flex justify-end"
+              variants={fadeIn}
+              initial="hidden"
+              animate={isVisible ? "visible" : "hidden"}
+            >
               <Button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-4 py-1 h-auto rounded-xl text-sm">
                 Start Test →
               </Button>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* Features grid */}
-          <div className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto">
+          {/* Features grid with scroll-based animations */}
+          <motion.div
+            style={{ opacity: featuresOpacity }}
+            className="mt-4 grid grid-cols-2 lg:grid-cols-4 gap-3 max-w-4xl mx-auto"
+            variants={staggerChildren}
+            initial="hidden"
+            animate={isVisible ? "visible" : "hidden"}
+          >
             {testTypes.map((type) => (
-              <div
+              <motion.div
                 key={type.name}
+                variants={scaleIn}
                 className={`p-3 rounded-xl backdrop-blur-sm border cursor-pointer transition-all duration-200
                   ${
                     testType === type.name
@@ -432,29 +643,41 @@ export default function SitePerformanceTester() {
                       : "bg-white/5 border-white/10 hover:bg-white/8"
                   }`}
                 onClick={() => setTestType(type.name)}
+                style={{
+                  willChange: "transform, opacity",
+                  transform: "translateZ(0)",
+                }}
               >
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center mb-2 border border-white/10">
                   {type.icon}
                 </div>
                 <h3 className="text-sm font-semibold mb-1">{type.name}</h3>
                 <p className="text-xs text-white/60">{type.description}</p>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
-          <div className="mt-4 text-center">
-            <AnimatedGradientText>
-              <span
-                className={cn(
-                  `animate-gradient inline bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
-                )}
-              >
-                Powered by advanced analytics
-              </span>
-              <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-            </AnimatedGradientText>
-          </div>
-        </motion.div>
+          <motion.div
+            style={{ opacity: footerOpacity }}
+            className="mt-4 text-center"
+            variants={fadeIn}
+            initial="hidden"
+            animate={isVisible ? "visible" : "hidden"}
+          >
+            {isVisible && (
+              <AnimatedGradientText>
+                <span
+                  className={cn(
+                    `animate-gradient inline bg-gradient-to-r from-[#ffaa40] via-[#9c40ff] to-[#ffaa40] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                  )}
+                >
+                  Powered by advanced analytics
+                </span>
+                <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+              </AnimatedGradientText>
+            )}
+          </motion.div>
+        </div>
       </div>
     </div>
   );

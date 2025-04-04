@@ -137,12 +137,3 @@ body {
     --brand: 50 100% 50%; /* Bright, punchy yellow */
   }
 }
-:root {
-  --sky-400: #38bdf8;
-  --sky-500: #0ea5e9;
-}
-
-.dark {
-  --sky-400: #38bdf8;
-  --sky-500: #0ea5e9;
-}
