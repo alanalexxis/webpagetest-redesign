@@ -1,3 +1,4 @@
+import { HeroSectionDemo } from "@/components/blocks/demo";
 import { FooterD } from "@/components/blocks/footer";
 import { GlowingEffectDemo } from "@/components/blocks/glow-card";
 import { MarqueeDemo } from "@/components/blocks/marquee";
@@ -13,7 +14,10 @@ export default function Home() {
       <div className="w-full">
         <NavbarDemo />
       </div>
-      <div className="w-full md:mt-96 sm:mt-0">
+      <div>
+        <HeroSectionDemo />
+      </div>
+      <div className="w-full md:mt-96 ">
         <SitePerformanceTester />
       </div>
       <div className="w-full mt-20">

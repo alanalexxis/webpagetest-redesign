@@ -11,8 +11,6 @@ import {
   MobileNavMenu,
 } from "@/components/ui/resizable-navbar";
 import { useState } from "react";
-import { HeroSectionDemo } from "./blocks/demo";
-import SitePerformanceTester from "./blocks/perfomance";
 
 export function NavbarDemo() {
   const navItems = [
@@ -88,9 +86,6 @@ export function NavbarDemo() {
           </MobileNavMenu>
         </MobileNav>
       </Navbar>
-      <div className="-mt-10">
-        <HeroSectionDemo />
-      </div>
       {/* Navbar */}
     </div>
   );
