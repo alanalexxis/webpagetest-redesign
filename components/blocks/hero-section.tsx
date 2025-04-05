@@ -113,12 +113,12 @@ export function HeroSection({
                     imageSrc={imageSrc}
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-background to-transparent"></div>
-                  <BorderBeam duration={8} size={100} />
+                  <BorderBeam duration={8} size={200} />
                 </Mockup>
               </MockupFrame>
               <Glow
                 variant="top"
-                className="animate-appear-zoom opacity-0 delay-1000"
+                className="animate-appear-zoom opacity-0 delay-1000  "
                 colorScheme={color}
                 intensity="medium"
                 animated={true}

@@ -264,7 +264,7 @@ export default function SitePerformanceTester() {
   return (
     <div
       ref={componentRef}
-      className="bg-background flex flex-col items-center justify-center text-white relative overflow-hidden py-6 mt-64"
+      className=" flex flex-col items-center justify-center text-white relative overflow-hidden py-6 md:mt-64 sm:mt-32"
       style={{
         willChange: "opacity, transform",
         perspective: "1000px",

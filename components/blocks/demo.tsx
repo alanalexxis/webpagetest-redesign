@@ -11,7 +11,7 @@ export function HeroSectionDemo() {
       title: "Introducing",
       highlight: "Carbon Control",
       color: "purple",
-      imageSrc: "https://i.imgur.com/qq8dL8f.png",
+      imageSrc: "/1.jpg", // Changed to local path
       description:
         "New in WebPageTest! Measure your site's carbon footprint and run No-Code Experiments to find ways to improve.",
     },
@@ -20,7 +20,7 @@ export function HeroSectionDemo() {
       title: "Live Internet",
       highlight: "Outages Map",
       color: "teal",
-      imageSrc: "https://i.imgur.com/wHKAQDW.png",
+      imageSrc: "/2.jpg", // Changed to local path
       description:
         "Gain visibility into internet outages and pinpoint the root cause of poor web performance.",
     },
@@ -28,7 +28,7 @@ export function HeroSectionDemo() {
       title: "Lightning-Fast",
       highlight: "Web Performance",
       color: "sunset",
-      imageSrc: "https://i.imgur.com/k97aW3b.png",
+      imageSrc: "/3.jpg", // Changed to local path
       description:
         "Learn to analyze performance, fix issues, and deliver fast websites from the start.",
     },
@@ -86,11 +86,6 @@ export function HeroSectionDemo() {
             icon: <Icons.gitHub className="h-5 w-5" />,
           },
         ]}
-        image={{
-          light: "https://www.launchuicomponents.com/app-light.png",
-          dark: "https://i.imgur.com/K8qbrEi.png",
-          alt: "UI Components Preview",
-        }}
       />
     </div>
   );

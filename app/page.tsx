@@ -14,7 +14,8 @@ export default function Home() {
       <div className="w-full">
         <NavbarDemo />
       </div>
-      <div className="">
+
+      <div className="w-full relative">
         <HeroSectionDemo />
       </div>
       <div className="w-full md:mt-96 ">
@@ -33,12 +34,6 @@ export default function Home() {
       <div className="w-full -mt-10">
         <FooterD />
       </div>
-      <Particles
-        className="absolute inset-0 z-0"
-        quantity={150}
-        ease={80}
-        refresh
-      />
     </div>
   );
 }

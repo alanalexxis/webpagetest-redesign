@@ -185,7 +185,7 @@ const GridItem = ({ area, icon, title, description, delay }: GridItemProps) => {
           </div>
         </div>
         <motion.div
-          className="absolute bottom-0 w-96 h-96 rounded-full bg-gradient-to-r from-blue-600/15 to-fuchsia-600/15 blur-3xl"
+          className="absolute bottom-0 w-72 h-72 rounded-full bg-gradient-to-r from-blue-600/15 to-fuchsia-600/15 blur-3xl"
           style={{ transform: "translateZ(0)" }}
           variants={glowVariants}
         />

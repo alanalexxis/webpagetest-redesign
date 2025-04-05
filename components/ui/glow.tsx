@@ -42,7 +42,6 @@ const Glow = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement> &
     VariantProps<typeof glowVariants> & {
       animated?: boolean;
-      showStars?: boolean;
     }
 >(
   (
@@ -53,13 +52,11 @@ const Glow = React.forwardRef<
       intensity,
       size,
       animated = false,
-      showStars = false,
+
       ...props
     },
     ref
   ) => {
-    const starsRef = useRef<HTMLDivElement>(null);
-
     // Define color schemes
     const colorSchemes = {
       purple: {
@@ -67,35 +64,30 @@ const Glow = React.forwardRef<
           "bg-[radial-gradient(ellipse_at_center,_rgba(147,51,234,0.5)_10%,_rgba(147,51,234,0)_60%)]",
         secondary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(192,132,252,0.4)_10%,_rgba(192,132,252,0)_60%)]",
-        starColor: "rgba(192,132,252,0.8)",
       },
       teal: {
         primary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(20,184,166,0.5)_10%,_rgba(20,184,166,0)_60%)]",
         secondary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(45,212,191,0.4)_10%,_rgba(45,212,191,0)_60%)]",
-        starColor: "rgba(45,212,191,0.8)",
       },
       sunset: {
         primary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(234,88,12,0.5)_10%,_rgba(234,88,12,0)_60%)]",
         secondary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(251,146,60,0.4)_10%,_rgba(251,146,60,0)_60%)]",
-        starColor: "rgba(251,146,60,0.8)",
       },
       cosmic: {
         primary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(76,29,149,0.5)_10%,_rgba(76,29,149,0)_60%)]",
         secondary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(124,58,237,0.4)_10%,_rgba(124,58,237,0)_70%)]",
-        starColor: "rgba(124,58,237,0.8)",
       },
       neon: {
         primary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(16,185,129,0.5)_10%,_rgba(16,185,129,0)_60%)]",
         secondary:
           "bg-[radial-gradient(ellipse_at_center,_rgba(250,204,21,0.4)_10%,_rgba(250,204,21,0)_60%)]",
-        starColor: "rgba(16,185,129,0.8)",
       },
     };
 
@@ -125,42 +117,6 @@ const Glow = React.forwardRef<
 
     const selectedScheme = colorSchemes[colorScheme || "purple"];
     const selectedSize = sizeConfig[size || "medium"];
-
-    // Create stars effect
-    useEffect(() => {
-      if (showStars && starsRef.current) {
-        const starsContainer = starsRef.current;
-        const starColor = selectedScheme.starColor;
-
-        // Clear existing stars
-        starsContainer.innerHTML = "";
-
-        // Create stars
-        const numStars = 50;
-        const containerWidth = starsContainer.offsetWidth;
-        const containerHeight = starsContainer.offsetHeight;
-
-        for (let i = 0; i < numStars; i++) {
-          const star = document.createElement("div");
-          const size = Math.random() * 2 + 1;
-          const x = Math.random() * 100;
-          const y = Math.random() * 100;
-          const delay = Math.random() * 5;
-          const duration = Math.random() * 3 + 2;
-
-          star.style.width = `${size}px`;
-          star.style.height = `${size}px`;
-          star.style.left = `${x}%`;
-          star.style.top = `${y}%`;
-          star.style.backgroundColor = starColor;
-          star.style.position = "absolute";
-          star.style.borderRadius = "50%";
-          star.style.animation = `twinkle ${duration}s infinite ${delay}s`;
-
-          starsContainer.appendChild(star);
-        }
-      }
-    }, [showStars, colorScheme]);
 
     return (
       <div
@@ -215,31 +171,6 @@ const Glow = React.forwardRef<
             variant === "center" && "-translate-y-1/2"
           )}
         />
-
-        {/* Stars container */}
-        {showStars && (
-          <div
-            ref={starsRef}
-            className="absolute top-0 left-0 w-full h-full z-10 overflow-hidden"
-          />
-        )}
-
-        {/* CSS animation for stars */}
-        {showStars && (
-          <style jsx global>{`
-            @keyframes twinkle {
-              0% {
-                opacity: 0.2;
-              }
-              50% {
-                opacity: 1;
-              }
-              100% {
-                opacity: 0.2;
-              }
-            }
-          `}</style>
-        )}
       </div>
     );
   }
