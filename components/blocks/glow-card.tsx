@@ -185,10 +185,17 @@ const GridItem = ({ area, icon, title, description, delay }: GridItemProps) => {
           </div>
         </div>
         <motion.div
-          className="absolute bottom-0 -right-40 w-96 h-96 rounded-full bg-gradient-to-r from-violet-600/15 to-fuchsia-600/15 blur-3xl"
+          className="absolute bottom-0 w-96 h-96 rounded-full bg-gradient-to-r from-blue-600/15 to-fuchsia-600/15 blur-3xl"
           style={{ transform: "translateZ(0)" }}
           variants={glowVariants}
         />
+        {/* Background elements - optimized with hardware acceleration */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="absolute top-20 left-96 w-96 h-96 rounded-full bg-gradient-to-r from-blue-600/15 to-blue-600/15 blur-3xl"
+            style={{ transform: "translateZ(0)" }}
+          ></div>
+        </div>
       </div>
     </motion.li>
   );
