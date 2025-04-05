@@ -5,8 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRightIcon } from "lucide-react";
 import { Mockup, MockupFrame } from "@/components/ui/mockup";
 import { Glow } from "@/components/ui/glow";
-import Image from "next/image";
-import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { GradientText } from "../ui/gradient-text";
 import { BackgroundLines } from "../ui/background-lines";
@@ -30,6 +28,9 @@ interface HeroProps {
   };
   title: string;
   description: string;
+  highlight: string;
+  color: string;
+  imageSrc: string;
   actions: HeroAction[];
   image: {
     light: string;
@@ -41,13 +42,12 @@ interface HeroProps {
 export function HeroSection({
   badge,
   title,
+  highlight,
   description,
   actions,
-  image,
+  color,
+  imageSrc,
 }: HeroProps) {
-  const { resolvedTheme } = useTheme();
-  const imageSrc = resolvedTheme === "light" ? image.light : image.dark;
-
   return (
     <BackgroundLines>
       <section
@@ -72,7 +72,7 @@ export function HeroSection({
 
             {/* Title */}
             <h1 className="relative z-10 inline-block animate-appear bg-clip-text text-4xl font-semibold leading-tight drop-shadow-2xl sm:text-6xl sm:leading-tight md:text-8xl md:leading-tight">
-              {title} <GradientText>Carbon Control</GradientText>
+              {title} <GradientText>{highlight}</GradientText>
             </h1>
 
             {/* Description */}
@@ -110,7 +110,7 @@ export function HeroSection({
                     url="https://www.webpagetest.org/"
                     className="size-full"
                     mode="simple"
-                    imageSrc="https://i.imgur.com/qq8dL8f.png"
+                    imageSrc={imageSrc}
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-full bg-gradient-to-t from-background to-transparent"></div>
                   <BorderBeam duration={8} size={100} />
@@ -119,7 +119,7 @@ export function HeroSection({
               <Glow
                 variant="top"
                 className="animate-appear-zoom opacity-0 delay-1000"
-                colorScheme="purple"
+                colorScheme={color}
                 intensity="medium"
                 animated={true}
               />
