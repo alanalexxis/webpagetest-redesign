@@ -34,6 +34,12 @@ export default function Home() {
       <div className="w-full -mt-10">
         <FooterD />
       </div>
+      <Particles
+        className="absolute w-full inset-0 z-0"
+        quantity={150}
+        ease={80}
+        refresh
+      />
     </div>
   );
 }

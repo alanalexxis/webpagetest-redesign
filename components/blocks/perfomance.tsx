@@ -16,22 +16,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-  useSpring,
-} from "framer-motion";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
 import { ContainerTextFlip } from "../ui/text-flip";
-import { BorderBeam } from "../magicui/border-beam";
+
 import AnimatedGradientText from "../ui/animated-gradient-text";
 import { cn } from "@/lib/utils";
 
@@ -109,7 +97,7 @@ const testConfigurations = [
 export default function SitePerformanceTester() {
   const [testType, setTestType] = useState(testTypes[0].name);
   const [url, setUrl] = useState("");
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  // Remove mousePosition state - now handled in parent component
   const [selectedConfigId, setSelectedConfigId] = useState(
     testConfigurations[0].id
   );
@@ -118,9 +106,6 @@ export default function SitePerformanceTester() {
   // Refs for scroll-based animations
   const componentRef = useRef(null);
   const scrollRef = useRef(null);
-
-  // Check if user prefers reduced motion
-  const prefersReducedMotion = useReducedMotion();
 
   // Use scroll progress for animations instead of IntersectionObserver
   const { scrollYProgress } = useScroll({
@@ -172,22 +157,9 @@ export default function SitePerformanceTester() {
       }
     });
 
-    // Handle mouse movements with RAF for better performance
-    const handleMouseMove = (e) => {
-      if (!throttleMouseMove.current) {
-        throttleMouseMove.current = true;
-        requestAnimationFrame(() => {
-          setMousePosition({ x: e.clientX, y: e.clientY });
-          throttleMouseMove.current = false;
-        });
-      }
-    };
-
-    const throttleMouseMove = { current: false };
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    // Remove mouse move event handler - now in parent component
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
       unsubscribe();
     };
   }, [scrollYProgress]);
@@ -264,23 +236,13 @@ export default function SitePerformanceTester() {
   return (
     <div
       ref={componentRef}
-      className=" flex flex-col items-center justify-center text-white relative overflow-hidden py-6 md:mt-64 sm:mt-32"
+      className="flex flex-col items-center justify-center text-white relative overflow-hidden py-6 md:mt-64 sm:mt-32"
       style={{
         willChange: "opacity, transform",
         perspective: "1000px",
         backfaceVisibility: "hidden",
       }}
     >
-      {/* Optimized cursor glow with lower intensity for better performance */}
-      <div
-        className="pointer-events-none fixed inset-0 z-30 opacity-70"
-        style={{
-          background: `radial-gradient(500px circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(101, 70, 235, 0.04), transparent 40%)`,
-          willChange: "background",
-          transform: "translateZ(0)",
-        }}
-      />
-
       {/* Background elements - optimized with hardware acceleration */}
       <div className="absolute inset-0 overflow-hidden">
         <div
