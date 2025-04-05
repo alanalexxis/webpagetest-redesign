@@ -10,6 +10,7 @@ import { GradientText } from "../ui/gradient-text";
 import { BackgroundLines } from "../ui/background-lines";
 import { BorderBeam } from "../magicui/border-beam";
 import { Safari } from "../magicui/safari";
+import { RainbowButton } from "../ui/rainbow-button";
 
 interface HeroAction {
   text: string;
@@ -83,19 +84,9 @@ export function HeroSection({
             {/* Actions */}
             <div className="relative z-10 flex animate-appear justify-center gap-4 opacity-0 delay-300">
               <div className="relative z-10 flex animate-appear justify-center gap-4 opacity-0 delay-300">
-                {actions.map((action, index) => (
-                  <Button
-                    key={index}
-                    variant={action.variant}
-                    size="lg"
-                    asChild
-                  >
-                    <a href={action.href} className="flex items-center gap-2">
-                      {action.icon}
-                      {action.text}
-                    </a>
-                  </Button>
-                ))}
+                <RainbowButton className="text-sm">
+                  Get Unlimited Access
+                </RainbowButton>
               </div>
             </div>
 

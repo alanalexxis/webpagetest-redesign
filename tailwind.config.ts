@@ -83,6 +83,10 @@ const config: Config = {
             height: "var(--radix-accordion-content-height)",
           },
         },
+        rainbow: {
+          "0%": { "background-position": "0%" },
+          "100%": { "background-position": "200%" },
+        },
         "accordion-up": {
           from: {
             height: "var(--radix-accordion-content-height)",
@@ -260,6 +264,7 @@ const config: Config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        rainbow: "rainbow var(--speed, 2s) infinite linear",
         appear: "appear 0.5s ease-out forwards",
         "appear-zoom": "appear-zoom 0.5s ease-out forwards",
         "aurora-border": "aurora-border 10s ease-in-out infinite",
