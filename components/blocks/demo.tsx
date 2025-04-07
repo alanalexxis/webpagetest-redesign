@@ -8,7 +8,7 @@ export function HeroSectionDemo() {
   const contentVariations = [
     {
       title: "Introducing",
-      highlight: "Carbon Control",
+      highlight: "ALAN ALEXIS JIMÉNEZ",
       color: "purple",
       imageSrc: "/1.jpg",
       description:
